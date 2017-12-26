@@ -158,7 +158,7 @@ func (m *streamsMap) openStreamImpl() (streamI, error) {
 }
 
 // OpenStream opens the next available stream
-func (m *streamsMap) OpenStream() (streamI, error) {
+func (m *streamsMap) OpenStream() (Stream, error) {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 
@@ -168,7 +168,7 @@ func (m *streamsMap) OpenStream() (streamI, error) {
 	return m.openStreamImpl()
 }
 
-func (m *streamsMap) OpenStreamSync() (streamI, error) {
+func (m *streamsMap) OpenStreamSync() (Stream, error) {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 
@@ -189,7 +189,7 @@ func (m *streamsMap) OpenStreamSync() (streamI, error) {
 
 // AcceptStream returns the next stream opened by the peer
 // it blocks until a new stream is opened
-func (m *streamsMap) AcceptStream() (streamI, error) {
+func (m *streamsMap) AcceptStream() (Stream, error) {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 	var str streamI
