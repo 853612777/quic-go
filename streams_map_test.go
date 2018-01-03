@@ -2,7 +2,6 @@ package quic
 
 import (
 	"errors"
-	"sort"
 
 	"github.com/lucas-clemente/quic-go/internal/protocol"
 	"github.com/lucas-clemente/quic-go/qerr"
@@ -500,32 +499,6 @@ var _ = Describe("Streams Map", func() {
 					Expect(str.StreamID()).To(Equal(protocol.StreamID(2)))
 				})
 			})
-		})
-	})
-
-	Context("Ranging", func() {
-		It("ranges over all open streams", func() {
-			setNewStreamsMap(protocol.PerspectiveServer, protocol.VersionWhatever)
-			var callbackCalledForStream []protocol.StreamID
-			callback := func(str streamI) {
-				callbackCalledForStream = append(callbackCalledForStream, str.StreamID())
-				sort.Slice(callbackCalledForStream, func(i, j int) bool {
-					return callbackCalledForStream[i] < callbackCalledForStream[j]
-				})
-			}
-
-			Expect(m.streams).To(BeEmpty())
-			// create 5 streams, ids 4 to 8
-			callbackCalledForStream = callbackCalledForStream[:0]
-			for i := 4; i <= 8; i++ {
-				str := NewMockStreamI(mockCtrl)
-				str.EXPECT().StreamID().Return(protocol.StreamID(i)).AnyTimes()
-				err := m.putStream(str)
-				Expect(err).NotTo(HaveOccurred())
-			}
-			// execute the callback for all streams
-			m.Range(callback)
-			Expect(callbackCalledForStream).To(Equal([]protocol.StreamID{4, 5, 6, 7, 8}))
 		})
 	})
 

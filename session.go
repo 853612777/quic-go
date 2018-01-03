@@ -693,13 +693,8 @@ func (s *session) processTransportParameters(params *handshake.TransportParamete
 		s.packer.SetOmitConnectionID()
 	}
 	s.connFlowController.UpdateSendWindow(params.ConnectionFlowControlWindow)
-	// increase the flow control windows of all streams by sending them a fake MAX_STREAM_DATA frame
-	s.streamsMap.Range(func(str streamI) {
-		str.handleMaxStreamDataFrame(&wire.MaxStreamDataFrame{
-			StreamID:   str.StreamID(),
-			ByteOffset: params.StreamFlowControlWindow,
-		})
-	})
+	// the crypto stream is the only open stream at this moment
+	// so we don't need to update stream flow control windows
 }
 
 func (s *session) sendPacket() error {

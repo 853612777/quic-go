@@ -225,16 +225,6 @@ func (m *streamsMap) DeleteStream(id protocol.StreamID) error {
 	return nil
 }
 
-// Range executes a callback for all streams, in pseudo-random order
-func (m *streamsMap) Range(cb func(s streamI)) {
-	m.mutex.RLock()
-	defer m.mutex.RUnlock()
-
-	for _, s := range m.streams {
-		cb(s)
-	}
-}
-
 func (m *streamsMap) putStream(s streamI) error {
 	id := s.StreamID()
 	if _, ok := m.streams[id]; ok {
